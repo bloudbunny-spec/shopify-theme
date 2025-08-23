@@ -1,0 +1,424 @@
+{%- comment -%}
+  Premium Product Template Section for Shopify Theme
+{%- endcomment -%}
+
+<div class="product-template">
+  <div class="container">
+    <div class="product-container">
+      <div class="product-gallery">
+        {%- if product.featured_media != blank -%}
+          <div class="product-gallery-main">
+            {%- for media in product.media -%}
+              <div class="product-gallery-item{% if forloop.first %} active{% endif %}" data-media-id="{{ media.id }}">
+                {%- case media.media_type -%}
+                  {%- when 'image' -%}
+                    <div class="product-image-zoom">
+                      <img 
+                        src="{{ media.preview_image | img_url: '800x' }}"
+                        srcset="
+                          {{ media.preview_image | img_url: '800x' }} 800w,
+                          {{ media.preview_image | img_url: '1200x' }} 1200w,
+                          {{ media.preview_image | img_url: '1600x' }} 1600w
+                        "
+                        sizes="(min-width: 992px) 50vw, 100vw"
+                        alt="{{ media.alt | default: product.title }}"
+                        loading="{{ forloop.first | ternary: 'eager', 'lazy' }}"
+                        width="{{ media.width }}"
+                        height="{{ media.height }}"
+                        class="product-featured-image"
+                      >
+                      <div class="product-image-zoomer" style="background-image: url('{{ media.preview_image | img_url: '1600x' }}');"></div>
+                    </div>
+                  
+                  {%- when 'video' -%}
+                    {{ media | media_tag: class: 'product-video', autoplay: false, loop: true, muted: true, controls: true }}
+                  
+                  {%- when 'external_video' -%}
+                    {{ media | media_tag: class: 'product-external-video' }}
+                  
+                  {%- when 'model' -%}
+                    {{ media | media_tag: class: 'product-model' }}
+                {%- endcase -%}
+              </div>
+            {%- endfor -%}
+          </div>
+          
+          {%- if product.media.size > 1 -%}
+            <div class="product-gallery-thumbnails">
+              {%- for media in product.media -%}
+                <div class="product-thumbnail{% if forloop.first %} active{% endif %}" data-media-id="{{ media.id }}">
+                  <img 
+                    src="{{ media.preview_image | img_url: '150x' }}"
+                    alt="{{ media.alt | default: product.title }}"
+                    loading="lazy"
+                    width="{{ media.preview_image.width }}"
+                    height="{{ media.preview_image.height }}"
+                  >
+                </div>
+              {%- endfor -%}
+            </div>
+          {%- endif -%}
+        {%- else -%}
+          <div class="product-gallery-main">
+            <div class="product-gallery-item active">
+              {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg product-featured-image' }}
+            </div>
+          </div>
+        {%- endif -%}
+      </div>
+      
+      <div class="product-details">
+        <div class="breadcrumbs">
+          <a href="{{ routes.root_url }}">{{ 'general.breadcrumbs.home' | t }}</a>
+          <span class="separator">/</span>
+          <a href="{{ product.collection.url }}">{{ product.collection.title }}</a>
+          <span class="separator">/</span>
+          <span class="current">{{ product.title }}</span>
+        </div>
+        
+        <h1 class="product-title">{{ product.title }}</h1>
+        
+        <div class="product-price" data-product-price>
+          {%- if product.compare_at_price_max > product.price -%}
+            <span class="product-price-sale">{{ product.price | money }}</span>
+            <span class="product-price-compare">{{ product.compare_at_price | money }}</span>
+          {%- else -%}
+            <span class="product-price-regular">{{ product.price | money }}</span>
+          {%- endif -%}
+        </div>
+        
+        {%- if product.description != blank -%}
+          <div class="product-description rte">
+            {{ product.description }}
+          </div>
+        {%- endif -%}
+        
+        {%- form 'product', product, id: 'product-form', class: 'product-form' -%}
+          <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+          
+          {%- for block in section.blocks -%}
+            {%- case block.type -%}
+              {%- when 'variant_selector' -%}
+                <div class="variant-selector" data-variants="{{ product.variants | json }}" data-money-format="{{ shop.money_format }}">
+                  {%- for option in product.options_with_values -%}
+                    <div class="option-selector" data-option-index="{{ forloop.index0 }}">
+                      <div class="option-label">{{ option.name }}</div>
+                      <div class="option-values">
+                        {%- for value in option.values -%}
+                          {%- assign option_available = true -%}
+                          {%- assign selected = false -%}
+                          
+                          {%- if product.selected_or_first_available_variant.options[forloop.parent.index0] == value -%}
+                            {%- assign selected = true -%}
+                          {%- endif -%}
+                          
+                          <label class="option-value{% if selected %} selected{% endif %}">
+                            <input 
+                              type="radio" 
+                              name="option-{{ forloop.parent.index0 }}" 
+                              value="{{ value | escape }}"
+                              {% if selected %}checked{% endif %}
+                              {% unless option_available %}disabled{% endunless %}
+                            >
+                            <span class="option-value-text">{{ value }}</span>
+                          </label>
+                        {%- endfor -%}
+                      </div>
+                    </div>
+                  {%- endfor -%}
+                  
+                  <select name="id" id="ProductSelect" class="product-select" data-variant-select>
+                    {%- for variant in product.variants -%}
+                      <option 
+                        value="{{ variant.id }}" 
+                        {% if variant == product.selected_or_first_available_variant %}selected="selected"{% endif %}
+                        {% unless variant.available %}disabled="disabled"{% endunless %}
+                      >
+                        {{ variant.title }} - {{ variant.price | money }}
+                      </option>
+                    {%- endfor -%}
+                  </select>
+                </div>
+              
+              {%- when 'quantity_selector' -%}
+                <div class="quantity-wrapper">
+                  <label for="Quantity" class="quantity-label">{{ 'products.product.quantity' | t }}</label>
+                  <div class="quantity-selector">
+                    <button type="button" class="quantity-minus" aria-label="{{ 'products.product.decrease_quantity' | t }}">-</button>
+                    <input 
+                      type="number" 
+                      id="Quantity" 
+                      name="quantity" 
+                      value="1" 
+                      min="1" 
+                      class="quantity-input"
+                      aria-label="{{ 'products.product.quantity' | t }}"
+                    >
+                    <button type="button" class="quantity-plus" aria-label="{{ 'products.product.increase_quantity' | t }}">+</button>
+                  </div>
+                </div>
+              
+              {%- when 'buy_buttons' -%}
+                <div class="product-form-buttons">
+                  <button 
+                    type="submit" 
+                    name="add" 
+                    class="btn btn-primary add-to-cart-button"
+                    {% unless product.available %}disabled{% endunless %}
+                    data-add-to-cart
+                  >
+                    {%- if product.available -%}
+                      {{ 'products.product.add_to_cart' | t }}
+                    {%- else -%}
+                      {{ 'products.product.sold_out' | t }}
+                    {%- endif -%}
+                  </button>
+                  
+                  {%- if block.settings.show_dynamic_checkout -%}
+                    {{ form | payment_button }}
+                  {%- endif -%}
+                </div>
+              
+              {%- when 'trust_badges' -%}
+                <div class="product-trust-badges">
+                  <div class="trust-badge">
+                    <div class="trust-badge-icon">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M12 8v4l2 2"></path>
+                      </svg>
+                    </div>
+                    <div class="trust-badge-text">{{ 'products.product.fast_shipping' | t }}</div>
+                  </div>
+                  <div class="trust-badge">
+                    <div class="trust-badge-icon">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                      </svg>
+                    </div>
+                    <div class="trust-badge-text">{{ 'products.product.secure_payment' | t }}</div>
+                  </div>
+                  <div class="trust-badge">
+                    <div class="trust-badge-icon">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                        <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                        <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                      </svg>
+                    </div>
+                    <div class="trust-badge-text">{{ 'products.product.satisfaction_guarantee' | t }}</div>
+                  </div>
+                </div>
+              
+              {%- when 'share' -%}
+                <div class="product-share">
+                  <span class="share-label">{{ 'products.product.share' | t }}:</span>
+                  <ul class="share-buttons">
+                    <li>
+                      <a target="_blank" href="//www.facebook.com/sharer.php?u={{ shop.url | append: product.url }}" aria-label="Facebook">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                        </svg>
+                      </a>
+                    </li>
+                    <li>
+                      <a target="_blank" href="//twitter.com/share?text={{ product.title | url_encode }}&url={{ shop.url | append: product.url | url_encode }}" aria-label="Twitter">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+                        </svg>
+                      </a>
+                    </li>
+                    <li>
+                      <a target="_blank" href="//pinterest.com/pin/create/button/?url={{ shop.url | append: product.url | url_encode }}&media={{ product.featured_image | img_url: '1024x1024' | url_encode }}&description={{ product.title | url_encode }}" aria-label="Pinterest">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M8 12a4 4 0 0 1 8 0c0 2.667-2 4-2 4s.333 2 2.667 2C19.333 18 20 12 20 12s-3-9-8-9c-4 0-8 3-8 7 0 1.5.5 3 2 4 .667.5 1 0 1-.5"></path>
+                          <circle cx="12" cy="8" r="1"></circle>
+                        </svg>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+            {%- endcase -%}
+          {%- endfor -%}
+        {%- endform -%}
+      </div>
+    </div>
+    
+    {%- if section.settings.show_product_tabs -%}
+      <div class="product-tabs-wrapper">
+        <div class="product-tabs accordion" data-allow-multiple="false">
+          <div class="accordion-item {% if section.settings.open_first_tab %}is-open{% endif %}">
+            <div class="accordion-header">
+              <h3>{{ 'products.product.description' | t }}</h3>
+              <span class="accordion-icon"></span>
+            </div>
+            <div class="accordion-content">
+              <div class="rte">
+                {{ product.description }}
+              </div>
+            </div>
+          </div>
+          
+          {%- if section.settings.show_specifications -%}
+            <div class="accordion-item">
+              <div class="accordion-header">
+                <h3>{{ 'products.product.specifications' | t }}</h3>
+                <span class="accordion-icon"></span>
+              </div>
+              <div class="accordion-content">
+                <div class="specifications-table">
+                  {%- for product_meta in product.metafields.specifications -%}
+                    <div class="specification-row">
+                      <div class="specification-name">{{ product_meta.first | replace: '_', ' ' | capitalize }}</div>
+                      <div class="specification-value">{{ product_meta.last }}</div>
+                    </div>
+                  {%- endfor -%}
+                </div>
+              </div>
+            </div>
+          {%- endif -%}
+          
+          {%- if section.settings.show_shipping -%}
+            <div class="accordion-item">
+              <div class="accordion-header">
+                <h3>{{ 'products.product.shipping' | t }}</h3>
+                <span class="accordion-icon"></span>
+              </div>
+              <div class="accordion-content">
+                <div class="rte">
+                  {{ section.settings.shipping_text }}
+                </div>
+              </div>
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Product image gallery
+    const thumbnails = document.querySelectorAll('.product-thumbnail');
+    const galleryItems = document.querySelectorAll('.product-gallery-item');
+    
+    thumbnails.forEach(thumbnail => {
+      thumbnail.addEventListener('click', function() {
+        const mediaId = this.getAttribute('data-media-id');
+        
+        // Update active thumbnail
+        thumbnails.forEach(thumb => {
+          thumb.classList.remove('active');
+        });
+        this.classList.add('active');
+        
+        // Update active gallery item
+        galleryItems.forEach(item => {
+          item.classList.remove('active');
+          
+          if (item.getAttribute('data-media-id') === mediaId) {
+            item.classList.add('active');
+          }
+        });
+      });
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Product Template",
+  "tag": "section",
+  "class": "section-product-template",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_product_tabs",
+      "default": true,
+      "label": "Show product tabs"
+    },
+    {
+      "type": "checkbox",
+      "id": "open_first_tab",
+      "default": true,
+      "label": "Open first tab by default"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_specifications",
+      "default": true,
+      "label": "Show specifications tab"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_shipping",
+      "default": true,
+      "label": "Show shipping tab"
+    },
+    {
+      "type": "richtext",
+      "id": "shipping_text",
+      "label": "Shipping information",
+      "default": "<p>We ship worldwide. Standard shipping takes 3-5 business days. Expedited shipping is available.</p>"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "variant_selector",
+      "name": "Variant Selector",
+      "limit": 1
+    },
+    {
+      "type": "quantity_selector",
+      "name": "Quantity Selector",
+      "limit": 1
+    },
+    {
+      "type": "buy_buttons",
+      "name": "Buy Buttons",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "show_dynamic_checkout",
+          "default": true,
+          "label": "Show dynamic checkout buttons"
+        }
+      ]
+    },
+    {
+      "type": "trust_badges",
+      "name": "Trust Badges",
+      "limit": 1
+    },
+    {
+      "type": "share",
+      "name": "Share Buttons",
+      "limit": 1
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Template",
+      "blocks": [
+        {
+          "type": "variant_selector"
+        },
+        {
+          "type": "quantity_selector"
+        },
+        {
+          "type": "buy_buttons"
+        },
+        {
+          "type": "trust_badges"
+        },
+        {
+          "type": "share"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

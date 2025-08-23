@@ -1,0 +1,128 @@
+{%- comment -%}
+  Premium Hero Banner Section for Shopify Theme
+{%- endcomment -%}
+
+<div class="hero">
+  {%- if section.settings.image != blank -%}
+    <div class="hero-image-wrapper">
+      {%- assign image_height = section.settings.image_height | default: 'medium' -%}
+      <img 
+        src="{{ section.settings.image | img_url: 'master' }}"
+        srcset="
+          {{ section.settings.image | img_url: '1920x' }} 1920w,
+          {{ section.settings.image | img_url: '1600x' }} 1600w,
+          {{ section.settings.image | img_url: '1200x' }} 1200w,
+          {{ section.settings.image | img_url: '800x' }} 800w,
+          {{ section.settings.image | img_url: '600x' }} 600w,
+          {{ section.settings.image | img_url: '400x' }} 400w
+        "
+        sizes="100vw"
+        alt="{{ section.settings.image.alt | default: shop.name }}"
+        loading="eager"
+        class="hero-image height-{{ image_height }}"
+      >
+      <div class="hero-overlay" style="opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }}"></div>
+    </div>
+  {%- else -%}
+    <div class="hero-placeholder height-{{ image_height }}">
+      {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg' }}
+    </div>
+  {%- endif -%}
+  
+  <div class="container">
+    <div class="hero-content" style="color: {{ section.settings.text_color }}">
+      {%- if section.settings.title != blank -%}
+        <h2 class="hero-title">{{ section.settings.title }}</h2>
+      {%- endif -%}
+      
+      {%- if section.settings.subtitle != blank -%}
+        <div class="hero-subtitle">{{ section.settings.subtitle }}</div>
+      {%- endif -%}
+      
+      {%- if section.settings.button_label != blank and section.settings.button_link != blank -%}
+        <a href="{{ section.settings.button_link }}" class="btn btn-primary">
+          {{ section.settings.button_label }}
+        </a>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Hero Banner",
+  "tag": "section",
+  "class": "section-hero",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Background Image"
+    },
+    {
+      "type": "select",
+      "id": "image_height",
+      "options": [
+        {
+          "value": "small",
+          "label": "Small"
+        },
+        {
+          "value": "medium",
+          "label": "Medium"
+        },
+        {
+          "value": "large",
+          "label": "Large"
+        }
+      ],
+      "default": "medium",
+      "label": "Image height"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "default": "Hero banner title",
+      "label": "Heading"
+    },
+    {
+      "type": "richtext",
+      "id": "subtitle",
+      "default": "<p>Tell more about your store and products here</p>",
+      "label": "Subheading"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "default": "Shop Now",
+      "label": "Button label"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "default": "#ffffff",
+      "label": "Text color"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 100,
+      "step": 10,
+      "default": 30,
+      "label": "Overlay opacity"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero Banner",
+      "category": "Image"
+    }
+  ]
+}
+{% endschema %}

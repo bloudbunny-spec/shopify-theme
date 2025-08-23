@@ -1,0 +1,168 @@
+{%- comment -%}
+  Premium Featured Collection Section for Shopify Theme
+{%- endcomment -%}
+
+<div class="featured-collection section-padding">
+  <div class="container">
+    {%- if section.settings.title != blank -%}
+      <h2 class="section-title">{{ section.settings.title }}</h2>
+    {%- endif -%}
+    
+    {%- assign collection = collections[section.settings.collection] -%}
+    {%- assign product_limit = section.settings.products_to_show -%}
+    
+    {%- if collection != empty -%}
+      <div class="product-grid">
+        {%- for product in collection.products limit: product_limit -%}
+          <div class="product-card">
+            <div class="product-card-image-wrapper">
+              <a href="{{ product.url | within: collection }}">
+                {%- if product.featured_image != blank -%}
+                  <img 
+                    src="{{ product.featured_image | img_url: '300x' }}"
+                    srcset="
+                      {{ product.featured_image | img_url: '300x' }} 300w,
+                      {{ product.featured_image | img_url: '400x' }} 400w,
+                      {{ product.featured_image | img_url: '500x' }} 500w,
+                      {{ product.featured_image | img_url: '600x' }} 600w
+                    "
+                    sizes="(min-width: 992px) 25vw, (min-width: 768px) 33vw, (min-width: 480px) 50vw, 100vw"
+                    alt="{{ product.featured_image.alt | default: product.title }}"
+                    loading="lazy"
+                    class="product-card-image"
+                  >
+                {%- else -%}
+                  {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg product-card-image' }}
+                {%- endif -%}
+              </a>
+              
+              {%- if product.available == false -%}
+                <span class="product-badge sold-out">{{ 'products.product.sold_out' | t }}</span>
+              {%- elsif product.compare_at_price > product.price -%}
+                <span class="product-badge sale">{{ 'products.product.on_sale' | t }}</span>
+              {%- endif -%}
+              
+              <div class="product-card-actions">
+                {%- if product.available -%}
+                  <form method="post" action="{{ routes.cart_add_url }}" class="quick-add-form">
+                    <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+                    <button type="submit" class="quick-add-btn" aria-label="{{ 'products.product.add_to_cart' | t }}">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="9" cy="21" r="1"></circle>
+                        <circle cx="20" cy="21" r="1"></circle>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                      </svg>
+                    </button>
+                  </form>
+                {%- endif -%}
+                
+                <button type="button" class="quick-view-btn" data-product-id="{{ product.id }}" aria-label="{{ 'products.product.quick_view' | t }}">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            
+            <div class="product-card-info">
+              <h3 class="product-card-title">
+                <a href="{{ product.url | within: collection }}">{{ product.title }}</a>
+              </h3>
+              
+              <div class="product-card-price">
+                {%- if product.compare_at_price > product.price -%}
+                  <span class="product-card-regular-price">{{ product.price | money }}</span>
+                  <span class="product-card-compare-price">{{ product.compare_at_price | money }}</span>
+                {%- else -%}
+                  <span class="product-card-regular-price">{{ product.price | money }}</span>
+                {%- endif -%}
+              </div>
+              
+              {%- if section.settings.show_rating and product.metafields.reviews.rating.value > 0 -%}
+                <div class="product-card-rating">
+                  {%- assign rating_decimal = 0 -%}
+                  {%- assign rating = product.metafields.reviews.rating.value -%}
+                  {%- assign rating_decimal = rating | modulo: 1 -%}
+                  
+                  <span class="rating-stars">
+                    {%- for i in (1..5) -%}
+                      {%- assign star_class = 'star-empty' -%}
+                      {%- if rating >= i -%}
+                        {%- assign star_class = 'star-full' -%}
+                      {%- elsif rating > i | minus: 1 -%}
+                        {%- assign star_class = 'star-half' -%}
+                      {%- endif -%}
+                      
+                      <span class="star {{ star_class }}">★</span>
+                    {%- endfor -%}
+                  </span>
+                  
+                  <span class="rating-count">({{ product.metafields.reviews.rating_count.value }})</span>
+                </div>
+              {%- endif -%}
+            </div>
+          </div>
+        {%- endfor -%}
+      </div>
+      
+      {%- if section.settings.show_view_all and collection.all_products_count > product_limit -%}
+        <div class="view-all-wrapper">
+          <a href="{{ collection.url }}" class="btn btn-outline">{{ 'collections.general.view_all' | t }}</a>
+        </div>
+      {%- endif -%}
+    {%- else -%}
+      <div class="empty-collection">
+        <p>{{ 'collections.general.no_matches' | t }}</p>
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Featured Collection",
+  "tag": "section",
+  "class": "section-featured-collection",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "default": "Featured Collection",
+      "label": "Title"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "min": 4,
+      "max": 12,
+      "step": 4,
+      "default": 8,
+      "label": "Products to show"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_all",
+      "default": true,
+      "label": "Show 'View all' button"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_rating",
+      "default": true,
+      "label": "Show product rating"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured Collection",
+      "category": "Collection"
+    }
+  ]
+}
+{% endschema %}
