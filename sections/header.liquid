@@ -1,1 +1,166 @@
+﻿<div class="header" data-section-id="{{ section.id }}" data-section-type="header">
+  <div class="container">
+    <div class="header__inner">
+      <div class="header__logo">
+        {%- if section.settings.logo != blank -%}
+          <a href="/" class="header__logo-link">
+            <img src="{{ section.settings.logo | img_url: 'master' }}" alt="{{ shop.name }}" class="header__logo-image">
+          </a>
+        {%- else -%}
+          <a href="/" class="header__logo-text">
+            <span class="brand-name">BunnyEra</span>
+            <span class="brand-tagline">{{ section.settings.tagline | default: 'แฟชั่นสตรี' }}</span>
+          </a>
+        {%- endif -%}
+      </div>
 
+      <nav class="header__nav" role="navigation">
+        <ul class="header__menu">
+          {%- for link in section.settings.menu.links -%}
+            <li class="header__menu-item{% if link.active %} header__menu-item--active{% endif %}">
+              <a href="{{ link.url }}" class="header__menu-link">
+                {{ link.title }}
+              </a>
+              {%- if link.links != blank -%}
+                <ul class="header__submenu">
+                  {%- for childlink in link.links -%}
+                    <li class="header__submenu-item{% if childlink.active %} header__submenu-item--active{% endif %}">
+                      <a href="{{ childlink.url }}" class="header__submenu-link">
+                        {{ childlink.title }}
+                      </a>
+                    </li>
+                  {%- endfor -%}
+                </ul>
+              {%- endif -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+      </nav>
+
+      <div class="header__actions">
+        <a href="/search" class="header__icon header__icon--search">
+          <span class="visually-hidden">{{ 'general.search.title' | t }}</span>
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M19 19L13 13M15 8C15 11.866 11.866 15 8 15C4.13401 15 1 11.866 1 8C1 4.13401 4.13401 1 8 1C11.866 1 15 4.13401 15 8Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+        
+        <a href="/account" class="header__icon header__icon--account">
+          <span class="visually-hidden">{{ 'customer.account.title' | t }}</span>
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M16.6667 17.5V15.8333C16.6667 14.9493 16.3155 14.1014 15.6904 13.4763C15.0653 12.8512 14.2174 12.5 13.3333 12.5H6.66666C5.78261 12.5 4.93476 12.8512 4.30964 13.4763C3.68452 14.1014 3.33333 14.9493 3.33333 15.8333V17.5M13.3333 5.83333C13.3333 7.67428 11.8409 9.16667 10 9.16667C8.15904 9.16667 6.66666 7.67428 6.66666 5.83333C6.66666 3.99238 8.15904 2.5 10 2.5C11.8409 2.5 13.3333 3.99238 13.3333 5.83333Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+        
+        <button type="button" class="header__icon header__icon--cart js-cart-trigger">
+          <span class="visually-hidden">{{ 'cart.general.title' | t }}</span>
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M5 1.66667L2.5 5.00001V16.6667C2.5 17.1087 2.67559 17.5326 2.98816 17.8452C3.30072 18.1577 3.72464 18.3333 4.16667 18.3333H15.8333C16.2754 18.3333 16.6993 18.1577 17.0118 17.8452C17.3244 17.5326 17.5 17.1087 17.5 16.6667V5.00001L15 1.66667H5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M2.5 5H17.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M13.3333 8.33333C13.3333 9.2174 12.9821 10.0652 12.357 10.6904C11.7319 11.3155 10.884 11.6667 10 11.6667C9.11594 11.6667 8.2681 11.3155 7.64297 10.6904C7.01785 10.0652 6.66666 9.2174 6.66666 8.33333" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span class="cart-count" data-cart-count>
+            {{ cart.item_count }}
+          </span>
+        </button>
+        
+        <button type="button" class="header__icon header__icon--menu js-mobile-menu-trigger">
+          <span class="visually-hidden">{{ 'general.navigation.menu' | t }}</span>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 12H21M3 6H21M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- เมนูบนมือถือ -->
+<div class="mobile-menu js-mobile-menu">
+  <div class="mobile-menu__header">
+    <button type="button" class="mobile-menu__close js-mobile-menu-close">
+      <span class="visually-hidden">{{ 'general.accessibility.close_menu' | t }}</span>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    <div class="mobile-menu__brand">
+      <span class="brand-name">BunnyEra</span>
+    </div>
+  </div>
+  
+  <nav class="mobile-menu__nav">
+    <ul class="mobile-menu__items">
+      {%- for link in section.settings.menu.links -%}
+        <li class="mobile-menu__item{% if link.active %} mobile-menu__item--active{% endif %}">
+          <a href="{{ link.url }}" class="mobile-menu__link">
+            {{ link.title }}
+          </a>
+          {%- if link.links != blank -%}
+            <button class="mobile-menu__expand js-submenu-trigger" aria-expanded="false">
+              <span class="visually-hidden">{{ 'general.accessibility.expand_submenu' | t }}</span>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <ul class="mobile-menu__subitems">
+              {%- for childlink in link.links -%}
+                <li class="mobile-menu__subitem{% if childlink.active %} mobile-menu__subitem--active{% endif %}">
+                  <a href="{{ childlink.url }}" class="mobile-menu__sublink">
+                    {{ childlink.title }}
+                  </a>
+                </li>
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+    </ul>
+  </nav>
+</div>
+
+{% schema %}
+{
+  "name": "ส่วนหัว",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "โลโก้"
+    },
+    {
+      "type": "text",
+      "id": "tagline",
+      "label": "สโลแกนแบรนด์",
+      "default": "BunnyEra แฟชั่นสตรี"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "เมนู",
+      "default": "main-menu"
+    },
+    {
+      "type": "header",
+      "content": "แถบประกาศด้านบน"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_announcement",
+      "label": "แสดงแถบประกาศ",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "announcement_text",
+      "label": "ข้อความประกาศ",
+      "default": "ยินดีต้อนรับสู่ BunnyEra - เสื้อผ้าสตรีคุณภาพสูง"
+    },
+    {
+      "type": "url",
+      "id": "announcement_link",
+      "label": "ลิงก์ประกาศ"
+    }
+  ]
+}
+{% endschema %}

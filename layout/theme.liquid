@@ -1,1 +1,128 @@
+﻿<!DOCTYPE html>
+<html lang="{{ shop.locale }}">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="{{ settings.color_primary }}">
+  <link rel="canonical" href="{{ canonical_url }}">
+  
+  {%- if settings.favicon != blank -%}
+    <link rel="shortcut icon" href="{{ settings.favicon | img_url: '32x32' }}" type="image/png">
+  {%- endif -%}
 
+  {%- capture seo_title -%}
+    {{ page_title }}
+    {%- if current_tags -%}
+      {%- assign meta_tags = current_tags | join: ', ' -%} &ndash; {{ 'general.meta.tags' | t: tags: meta_tags -}}
+    {%- endif -%}
+    {%- if current_page != 1 -%}
+      &ndash; {{ 'general.meta.page' | t: page: current_page }}
+    {%- endif -%}
+    {%- unless page_title contains 'BunnyEra' -%}
+      &ndash; BunnyEra
+    {%- endunless -%}
+  {%- endcapture -%}
+  
+  <title>{{ seo_title }}</title>
+
+  {%- if page_description -%}
+    <meta name="description" content="{{ page_description | escape }}">
+  {%- else -%}
+    <meta name="description" content="BunnyEra - แบรนด์เสื้อผ้าสตรีคุณภาพสูง | สินค้าแฟชั่นคุณภาพ">
+  {%- endif -%}
+
+  <!-- Thai Font Import -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- CSS -->
+  {{ 'style.css' | asset_url | stylesheet_tag }}
+  
+  <!-- JS -->
+  <script src="{{ 'theme.js' | asset_url }}" defer="defer"></script>
+  
+  <!-- Shopify Required -->
+  {{ content_for_header }}
+</head>
+
+<body class="template-{{ template | replace: '.', '-' | handle }}">
+  <div class="page-container">
+    <a class="skip-to-content-link visually-hidden" href="#MainContent">
+      {{ "accessibility.skip_to_content" | t }}
+    </a>
+
+    {% section 'announcement-bar' %}
+    {% section 'header' %}
+
+    <main id="MainContent" class="main-content" role="main">
+      {{ content_for_layout }}
+    </main>
+
+    {% section 'footer' %}
+
+    <!-- Quick view modal -->
+    <div id="quick-view-modal" class="modal" aria-hidden="true">
+      <div class="modal-content">
+        <button class="modal-close" aria-label="{{ 'general.accessibility.close_modal' | t }}">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <div id="quick-view-container"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Back to top button -->
+  <button id="back-to-top" class="back-to-top" aria-label="{{ 'general.accessibility.back_to_top' | t }}">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="18 15 12 9 6 15"></polyline>
+    </svg>
+  </button>
+
+  <!-- BunnyEra brand watermark -->
+  <div class="brand-watermark">BunnyEra</div>
+
+  <!-- Custom scripts -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Back to top button functionality
+      const backToTopButton = document.getElementById('back-to-top');
+      if (backToTopButton) {
+        window.addEventListener('scroll', function() {
+          if (window.pageYOffset > 300) {
+            backToTopButton.classList.add('show');
+          } else {
+            backToTopButton.classList.remove('show');
+          }
+        });
+
+        backToTopButton.addEventListener('click', function() {
+          window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          });
+        });
+      }
+    });
+  </script>
+  
+  <style>
+    body {
+      font-family: 'Sarabun', sans-serif;
+    }
+    
+    .brand-watermark {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      opacity: 0.2;
+      font-size: 24px;
+      pointer-events: none;
+      z-index: 10;
+      font-weight: bold;
+      color: #d48c8c;
+    }
+  </style>
+</body>
+</html>

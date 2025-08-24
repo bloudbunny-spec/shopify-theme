@@ -1,125 +1,150 @@
-{%- comment -%}
-  Premium Footer Section for Shopify Theme
-{%- endcomment -%}
-
-<footer class="footer">
+﻿<footer class="footer" data-section-id="{{ section.id }}" data-section-type="footer">
   <div class="container">
-    <div class="footer-inner">
-      {%- if section.blocks.size > 0 -%}
+    <div class="footer__inner">
+      <div class="footer__brand">
+        {%- if section.settings.footer_logo != blank -%}
+          <img src="{{ section.settings.footer_logo | img_url: 'master' }}" alt="{{ shop.name }}" class="footer__logo">
+        {%- else -%}
+          <div class="footer__logo-text">
+            <span class="brand-name">BunnyEra</span>
+          </div>
+        {%- endif -%}
+        
+        {%- if section.settings.footer_text != blank -%}
+          <div class="footer__about">
+            {{ section.settings.footer_text }}
+          </div>
+        {%- endif -%}
+        
+        {%- if section.settings.show_social_icons -%}
+          <div class="footer__social">
+            {%- if settings.social_instagram_link != blank -%}
+              <a href="{{ settings.social_instagram_link }}" class="footer__social-link" target="_blank" rel="noopener" aria-label="{{ 'general.social.instagram' | t }}">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M16.8503 2H7.15C4.4 2 2.25 4.15 2.25 6.9V17.1C2.25 19.85 4.4 22 7.15 22H16.85C19.6 22 21.75 19.85 21.75 17.1V6.9C21.75 4.15 19.6003 2 16.8503 2ZM12 15.5C10.0703 15.5 8.5 13.93 8.5 12C8.5 10.07 10.0703 8.5 12 8.5C13.9297 8.5 15.5 10.07 15.5 12C15.5 13.93 13.9297 15.5 12 15.5ZM17 7C16.45 7 16 6.55 16 6C16 5.45 16.45 5 17 5C17.55 5 18 5.45 18 6C18 6.55 17.55 7 17 7Z" fill="currentColor"/>
+                </svg>
+              </a>
+            {%- endif -%}
+            
+            {%- if settings.social_facebook_link != blank -%}
+              <a href="{{ settings.social_facebook_link }}" class="footer__social-link" target="_blank" rel="noopener" aria-label="{{ 'general.social.facebook' | t }}">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M21.5 12.0001C21.5 6.76001 17.24 2.5 12 2.5C6.76 2.5 2.5 6.76001 2.5 12.0001C2.5 16.66 5.88 20.52 10.25 21.35V14.75H7.75V12.0001H10.25V9.89001C10.25 7.51001 11.84 6.00001 14.01 6.00001C15.08 6.00001 16.19 6.20001 16.19 6.20001V8.64001H14.94C13.72 8.64001 13.25 9.39001 13.25 10.16V12.0001H16.08L15.64 14.75H13.25V21.35C17.62 20.52 21 16.66 21.5 12.0001Z" fill="currentColor"/>
+                </svg>
+              </a>
+            {%- endif -%}
+            
+            {%- if settings.social_twitter_link != blank -%}
+              <a href="{{ settings.social_twitter_link }}" class="footer__social-link" target="_blank" rel="noopener" aria-label="{{ 'general.social.twitter' | t }}">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M22.46 6C21.69 6.35 20.86 6.58 20 6.69C20.88 6.16 21.56 5.32 21.88 4.31C21.05 4.81 20.13 5.16 19.16 5.36C18.37 4.5 17.26 4 16 4C13.65 4 11.73 5.92 11.73 8.29C11.73 8.63 11.77 8.96 11.84 9.27C8.28 9.09 5.11 7.38 3 4.79C2.63 5.42 2.42 6.16 2.42 6.94C2.42 8.43 3.17 9.75 4.33 10.5C3.62 10.5 2.96 10.3 2.38 10V10.03C2.38 12.11 3.86 13.85 5.82 14.24C5.19 14.41 4.53 14.44 3.89 14.31C4.16 15.18 4.69 15.95 5.41 16.5C6.13 17.04 7.01 17.31 7.89 17.31C6.37 18.51 4.49 19.14 2.56 19.13C2.22 19.13 1.88 19.11 1.54 19.07C3.44 20.29 5.7 21 8.12 21C16 21 20.33 14.46 20.33 8.79C20.33 8.6 20.33 8.42 20.32 8.23C21.16 7.63 21.88 6.87 22.46 6Z" fill="currentColor"/>
+                </svg>
+              </a>
+            {%- endif -%}
+            
+            {%- if settings.social_tiktok_link != blank -%}
+              <a href="{{ settings.social_tiktok_link }}" class="footer__social-link" target="_blank" rel="noopener" aria-label="{{ 'general.social.tiktok' | t }}">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M16.6 5.82C15.9165 5.03962 15.5397 4.03743 15.54 3H12.45V15.4C12.4494 15.8754 12.2983 16.3384 12.0184 16.7254C11.7384 17.1125 11.3428 17.4052 10.8874 17.5669C10.432 17.7286 9.9397 17.7518 9.47107 17.6335C9.00245 17.5153 8.57753 17.2612 8.25 16.9C7.84188 16.4566 7.61236 15.8862 7.60235 15.2926C7.59233 14.699 7.80246 14.1228 8.19618 13.6671C8.58991 13.2115 9.13648 12.9057 9.72999 12.8031C10.3235 12.7006 10.9322 12.8073 11.46 13.11V9.96C10.9497 9.85403 10.4249 9.85853 9.9172 9.97324C9.40949 10.088 8.93209 10.3103 8.51764 10.6255C8.10319 10.9407 7.76063 11.3418 7.51526 11.8001C7.26989 12.2584 7.12789 12.7631 7.1 13.28C7.07986 14.1395 7.2844 14.9878 7.69145 15.7276C8.0985 16.4674 8.68845 17.0683 9.39995 17.4588C10.1115 17.8494 10.9169 18.0139 11.7225 17.934C12.5281 17.8541 13.2977 17.5329 13.9444 17.0087C14.5911 16.4844 15.0895 15.7808 15.3862 14.9883C15.6828 14.1958 15.767 13.3461 15.63 12.52V8.68C16.9739 9.59763 18.5549 10.0785 20.17 10.06V7C19.0152 7.00076 17.8906 6.59061 16.6 5.82Z" fill="currentColor"/>
+                </svg>
+              </a>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      </div>
+      
+      <div class="footer__menu-wrapper">
         {%- for block in section.blocks -%}
           {%- case block.type -%}
-            {%- when 'text' -%}
-              <div class="footer-block footer-block-text" {{ block.shopify_attributes }}>
+            {%- when 'menu' -%}
+              <div class="footer__menu" {{ block.shopify_attributes }}>
                 {%- if block.settings.title != blank -%}
-                  <h2 class="footer-block-title">{{ block.settings.title }}</h2>
+                  <h3 class="footer__menu-title">{{ block.settings.title }}</h3>
                 {%- endif -%}
                 
-                {%- if block.settings.text != blank -%}
-                  <div class="footer-text rte">{{ block.settings.text }}</div>
-                {%- endif -%}
-                
-                {%- if block.settings.show_social -%}
-                  <ul class="footer-social-icons">
-                    {%- if settings.social_facebook_link != blank -%}
-                      <li class="footer-social-item">
-                        <a href="{{ settings.social_facebook_link }}" target="_blank" aria-label="Facebook">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+                {%- if block.settings.menu != blank -%}
+                  <ul class="footer__menu-items">
+                    {%- for link in block.settings.menu.links -%}
+                      <li class="footer__menu-item">
+                        <a href="{{ link.url }}" class="footer__menu-link">
+                          {{ link.title }}
                         </a>
-                      </li>
-                    {%- endif -%}
-                    
-                    {%- if settings.social_twitter_link != blank -%}
-                      <li class="footer-social-item">
-                        <a href="{{ settings.social_twitter_link }}" target="_blank" aria-label="Twitter">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg>
-                        </a>
-                      </li>
-                    {%- endif -%}
-                    
-                    {%- if settings.social_instagram_link != blank -%}
-                      <li class="footer-social-item">
-                        <a href="{{ settings.social_instagram_link }}" target="_blank" aria-label="Instagram">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
-                        </a>
-                      </li>
-                    {%- endif -%}
-                    
-                    {%- if settings.social_youtube_link != blank -%}
-                      <li class="footer-social-item">
-                        <a href="{{ settings.social_youtube_link }}" target="_blank" aria-label="YouTube">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"></path><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon></svg>
-                        </a>
-                      </li>
-                    {%- endif -%}
-                  </ul>
-                {%- endif -%}
-              </div>
-            
-            {%- when 'link_list' -%}
-              <div class="footer-block footer-block-links" {{ block.shopify_attributes }}>
-                {%- if block.settings.title != blank -%}
-                  <h2 class="footer-block-title">{{ block.settings.title }}</h2>
-                {%- endif -%}
-                
-                {%- assign footer_menu = block.settings.menu -%}
-                {%- if footer_menu != blank -%}
-                  <ul class="footer-links">
-                    {%- for link in footer_menu.links -%}
-                      <li class="footer-link">
-                        <a href="{{ link.url }}">{{ link.title }}</a>
                       </li>
                     {%- endfor -%}
                   </ul>
                 {%- endif -%}
               </div>
             
-            {%- when 'newsletter' -%}
-              <div class="footer-block footer-block-newsletter" {{ block.shopify_attributes }}>
+            {%- when 'text' -%}
+              <div class="footer__text" {{ block.shopify_attributes }}>
                 {%- if block.settings.title != blank -%}
-                  <h2 class="footer-block-title">{{ block.settings.title }}</h2>
+                  <h3 class="footer__text-title">{{ block.settings.title }}</h3>
                 {%- endif -%}
                 
                 {%- if block.settings.text != blank -%}
-                  <div class="footer-newsletter-text">{{ block.settings.text }}</div>
+                  <div class="footer__text-content rte">
+                    {{ block.settings.text }}
+                  </div>
+                {%- endif -%}
+              </div>
+              
+            {%- when 'newsletter' -%}
+              <div class="footer__newsletter" {{ block.shopify_attributes }}>
+                {%- if block.settings.title != blank -%}
+                  <h3 class="footer__newsletter-title">{{ block.settings.title }}</h3>
                 {%- endif -%}
                 
-                {%- form 'customer', id: 'ContactFooter', class: 'footer-newsletter-form' -%}
+                {%- if block.settings.text != blank -%}
+                  <div class="footer__newsletter-text">
+                    {{ block.settings.text }}
+                  </div>
+                {%- endif -%}
+                
+                {%- form 'customer', id: 'ContactFooter' -%}
                   <input type="hidden" name="contact[tags]" value="newsletter">
-                  <input
-                    type="email"
-                    name="contact[email]"
-                    id="NewsletterEmail"
-                    class="footer-newsletter-input"
-                    value="{{ form.email }}"
-                    placeholder="{{ 'general.newsletter.email_placeholder' | t }}"
-                    required
-                  >
-                  <button type="submit" class="footer-newsletter-submit" name="commit">
-                    <span>{{ 'general.newsletter.submit' | t }}</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <line x1="5" y1="12" x2="19" y2="12"></line>
-                      <polyline points="12 5 19 12 12 19"></polyline>
-                    </svg>
-                  </button>
+                  <div class="footer__newsletter-form">
+                    <div class="form-field">
+                      <input type="email" 
+                        name="contact[email]" 
+                        id="ContactFooter-email" 
+                        class="footer__newsletter-input"
+                        value="{{ form.email }}"
+                        placeholder="{{ 'general.newsletter.email_placeholder' | t }}"
+                        required>
+                      <button type="submit" class="footer__newsletter-submit" name="commit">
+                        <span class="visually-hidden">{{ 'general.newsletter.submit' | t }}</span>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M22 2L11 13M22 2L15 22L11 13M22 2L2 9L11 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                      </button>
+                    </div>
+                    {%- if form.errors -%}
+                      <div class="form-message form-message--error">
+                        {{ form.errors | default_errors }}
+                      </div>
+                    {%- endif -%}
+                    {%- if form.posted_successfully? -%}
+                      <div class="form-message form-message--success">
+                        {{ 'general.newsletter.confirmation' | t }}
+                      </div>
+                    {%- endif -%}
+                  </div>
                 {%- endform -%}
               </div>
           {%- endcase -%}
         {%- endfor -%}
-      {%- endif -%}
+      </div>
     </div>
     
-    <div class="footer-bottom">
-      <div class="footer-copyright">
-        <span>
-          &copy; {{ 'now' | date: "%Y" }} {{ shop.name | link_to: routes.root_url }}. 
-          {{ 'general.footer.all_rights_reserved' | t }}
-        </span>
+    <div class="footer__bottom">
+      <div class="footer__copyright">
+        &copy; {{ 'now' | date: '%Y' }} <span class="brand-name">BunnyEra</span>. {{ section.settings.copyright_text }}
       </div>
       
-      {%- if section.settings.show_payment_icons -%}
-        <div class="footer-payment-icons">
+      {%- if section.settings.payment_enable -%}
+        <div class="footer__payment">
           {%- for type in shop.enabled_payment_types -%}
-            {{ type | payment_type_svg_tag: class: 'payment-icon' }}
+            {{ type | payment_type_svg_tag: class: 'footer__payment-icon' }}
           {%- endfor -%}
         </div>
       {%- endif -%}
@@ -129,96 +154,108 @@
 
 {% schema %}
 {
-  "name": "Footer",
-  "tag": "section",
-  "class": "section-footer",
+  "name": "ส่วนท้าย",
   "settings": [
     {
+      "type": "image_picker",
+      "id": "footer_logo",
+      "label": "โลโก้ส่วนท้าย"
+    },
+    {
+      "type": "textarea",
+      "id": "footer_text",
+      "label": "แนะนำแบรนด์",
+      "default": "BunnyEra เป็นแบรนด์ที่มุ่งเน้นเสื้อผ้าสตรีระดับพรีเมียม ให้บริการเสื้อผ้าแฟชั่นคุณภาพสูง แสดงถึงเสน่ห์ของผู้หญิง"
+    },
+    {
       "type": "checkbox",
-      "id": "show_payment_icons",
-      "default": true,
-      "label": "Show payment icons"
+      "id": "show_social_icons",
+      "label": "แสดงไอคอนโซเชียลมีเดีย",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "copyright_text",
+      "label": "ข้อความลิขสิทธิ์",
+      "default": "สงวนลิขสิทธิ์"
+    },
+    {
+      "type": "checkbox",
+      "id": "payment_enable",
+      "label": "แสดงไอคอนการชำระเงิน",
+      "default": true
     }
   ],
   "blocks": [
     {
-      "type": "text",
-      "name": "Text",
-      "limit": 1,
+      "type": "menu",
+      "name": "เมนู",
       "settings": [
         {
           "type": "text",
           "id": "title",
-          "default": "About our store",
-          "label": "Title"
-        },
-        {
-          "type": "richtext",
-          "id": "text",
-          "default": "<p>Use this text to share information about your brand with your customers. Describe a product, share announcements, or welcome customers to your store.</p>",
-          "label": "Text"
-        },
-        {
-          "type": "checkbox",
-          "id": "show_social",
-          "default": true,
-          "label": "Show social icons"
-        }
-      ]
-    },
-    {
-      "type": "link_list",
-      "name": "Menu",
-      "settings": [
-        {
-          "type": "text",
-          "id": "title",
-          "default": "Quick links",
-          "label": "Title"
+          "label": "หัวข้อเมนู",
+          "default": "ลิงก์ด่วน"
         },
         {
           "type": "link_list",
           "id": "menu",
-          "default": "footer",
-          "label": "Menu"
+          "label": "เมนู",
+          "default": "footer"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "ข้อความ",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "หัวข้อ",
+          "default": "เกี่ยวกับเรา"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "ข้อความ",
+          "default": "<p>BunnyEra เป็นแบรนด์เสื้อผ้าสตรีระดับพรีเมียม ให้บริการเสื้อผ้าแฟชั่นคุณภาพสูง มุ่งมั่นที่จะแสดงเสน่ห์อันเป็นเอกลักษณ์ของผู้หญิงทุกคน</p>"
         }
       ]
     },
     {
       "type": "newsletter",
-      "name": "Newsletter",
+      "name": "จดหมายข่าว",
       "limit": 1,
       "settings": [
         {
           "type": "text",
           "id": "title",
-          "default": "Subscribe to our newsletter",
-          "label": "Title"
+          "label": "หัวข้อ",
+          "default": "สมัครรับข่าวสาร"
         },
         {
-          "type": "richtext",
+          "type": "text",
           "id": "text",
-          "default": "<p>Be the first to know about new collections and exclusive offers.</p>",
-          "label": "Text"
+          "label": "ข้อความ",
+          "default": "สมัครรับจดหมายข่าวของเราเพื่อรับข้อเสนอล่าสุดและข้อมูลสินค้าใหม่"
         }
       ]
     }
   ],
-  "presets": [
-    {
-      "name": "Footer",
-      "blocks": [
-        {
-          "type": "text"
-        },
-        {
-          "type": "link_list"
-        },
-        {
-          "type": "newsletter"
-        }
-      ]
-    }
-  ]
+  "default": {
+    "settings": {},
+    "blocks": [
+      {
+        "type": "menu"
+      },
+      {
+        "type": "text"
+      },
+      {
+        "type": "newsletter"
+      }
+    ]
+  }
 }
 {% endschema %}

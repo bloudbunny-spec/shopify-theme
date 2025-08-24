@@ -1,1 +1,38 @@
-
+[
+  {
+    "name": "主题信息",
+    "theme_name": "BunnyEra",
+    "theme_author": "BunnyEra设计团队",
+    "theme_version": "1.0.0",
+    "theme_documentation_url": "",
+    "theme_support_url": ""
+  },
+  {
+    "name": "BunnyEra品牌",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "brand_logo",
+        "label": "品牌Logo"
+      },
+      {
+        "type": "text",
+        "id": "brand_slogan",
+        "label": "品牌口号",
+        "default": "BunnyEra - 优雅女性的时尚选择"
+      },
+      {
+        "type": "textarea",
+        "id": "brand_description",
+        "label": "品牌描述",
+        "default": "BunnyEra是一家专注于高端女装的品牌，我们致力于为现代女性提供优质、时尚的服饰，展现每位女性的独特魅力和气质。"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_brand_badge",
+        "label": "显示品牌徽章",
+        "default": true
+      }
+    ]
+  }
+]
